@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block content %}
+<a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
+<h2>Record New Donation (Tests Trigger!)</h2>
+<p class="text-danger">This transaction inserts a Blood Bag into inventory and then immediately fires the **TRIGGER** to mark it as **'Available'**.</p>
+<form method="POST" action="{{ url_for('record_donation') }}">
+    <div class="mb-3">
+        <label for="donor_id" class="form-label">Donor ID (Just Registered)</label>
+        <input type="number" class="form-control" name="donor_id" value="{{ donor_id|default('') }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="staff_id" class="form-label">Staff Member</label>
+        <select class="form-select" name="staff_id" required>
+            {% for staff in staff_options %}
+                <option value="{{ staff.staff_id }}">{{ staff.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="donation_date" class="form-label">Donation Date</label>
+        <input type="date" class="form-control" name="donation_date" value="{{ now.strftime('%Y-%m-%d') }}" required>
+    </div>
+    <button type="submit" class="btn btn-warning">Record Donation & Run Trigger</button>
+</form>
+{% endblock %}

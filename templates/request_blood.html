@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+{% block content %}
+<a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
+<h2>Request Blood Unit (Fulfillment)</h2>
+<p>This initiates the process, adding the patient/request and immediately checking stock.</p>
+
+<form method="POST" action="{{ url_for('request_blood') }}">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Patient/Recipient Details</h3>
+            <div class="mb-3">
+                <label for="patient_name" class="form-label">Patient Name</label>
+                <input type="text" class="form-control" name="patient_name" required>
+            </div>
+            <div class="mb-3">
+                <label for="hospital" class="form-label">Hospital</label>
+                <input type="text" class="form-control" name="hospital" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3>Request Details</h3>
+            <div class="mb-3">
+                <label for="required_group" class="form-label">Required Blood Group</label>
+                <select class="form-select" name="required_group" required>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="units" class="form-label">Units Requested</label>
+                <input type="number" class="form-control" name="units" min="1" required>
+            </div>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-danger w-100 mt-3">Submit Blood Request</button>
+</form>
+{% endblock %}

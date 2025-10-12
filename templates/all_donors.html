@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% block content %}
+<a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
+<h2>All Registered Donors</h2>
+<p>This list displays every record from the **Donor** table (unfiltered).</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Blood Group</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for donor in donors %}
+        <tr>
+            <td>{{ donor.donor_id }}</td>
+            <td>{{ donor.first_name }} {{ donor.last_name }}</td>
+            <td>{{ donor.blood_group }}</td>
+            <td>{{ donor.phone_number }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

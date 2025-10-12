@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% block content %}
+<a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
+<h2>Eligible Donors List (Using VIEW)</h2>
+<p>This data is pulled directly from the SQL **VIEW** (`Eligible_Donors`), showing potential donors.</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Blood Group</th>
+            <th>Last Donation Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for donor in donors %}
+        <tr>
+            <td>{{ donor.donor_id }}</td>
+            <td>{{ donor.first_name }} {{ donor.last_name }}</td>
+            <td>{{ donor.blood_group }}</td>
+            <td>{{ donor.last_donation_date if donor.last_donation_date else 'Never Donated' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
