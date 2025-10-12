@@ -1,0 +1,26 @@
+/* Define Custom Background Colors for main dashboard UI */
+
+.bg-custom-blue { /* 1. Register Donor */
+    background-color: #17A2B8 !important; /* Info/Teal Blue */
+}
+
+.bg-custom-yellow { /* 2. Record Donation */
+    background-color: #FFC107 !important; /* Bright Yellow/Warning */
+}
+
+.bg-custom-cyan { /* 3. Stock Report */
+    background-color: #20C997 !important; /* Soft Green/Cyan */
+}
+
+.bg-custom-gray { /* 4. Eligible Donors / 5. All Donors */
+    background-color: #5A6268 !important; /* Professional Dark Gray */
+}
+
+.bg-custom-red { /* 6. Request Blood */
+    background-color: #c50606 !important; /* Deep Red/Maroon */
+}
+
+/* Ensure Text is white on darker backgrounds */
+.text-white {
+    color: white !important;
+}

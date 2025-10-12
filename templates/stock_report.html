@@ -2,7 +2,7 @@
 {% block content %}
 <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
 <h2>Blood Stock Report (Using Stored Procedure)</h2>
-<p>This report calls the MySQL **STORED PROCEDURE** (`Get_Available_Blood_Units`) for key blood groups.</p>
+<!--<p>This report calls the MySQL **STORED PROCEDURE** (`Get_Available_Blood_Units`) for key blood groups.</p>-->
 <table class="table table-bordered table-sm w-50">
     <thead>
         <tr class="table-info"><th>Blood Group</th><th>Available Units</th></tr>
@@ -10,7 +10,7 @@
     <tbody>
         {% for group, count in stock_report.items() %}
         <tr>
-            <td>**{{ group }}**</td>
+            <td>{{ group }}</td>
             <td class="fw-bold text-success">{{ count }} units</td>
         </tr>
         {% endfor %}

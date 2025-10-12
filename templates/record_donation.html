@@ -2,7 +2,7 @@
 {% block content %}
 <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
 <h2>Record New Donation (Tests Trigger!)</h2>
-<p class="text-danger">This transaction inserts a Blood Bag into inventory and then immediately fires the **TRIGGER** to mark it as **'Available'**.</p>
+<!--<p class="text-danger">This transaction inserts a Blood Bag into inventory and then immediately fires the **TRIGGER** to mark it as **'Available'**.</p>-->
 <form method="POST" action="{{ url_for('record_donation') }}">
     <div class="mb-3">
         <label for="donor_id" class="form-label">Donor ID (Just Registered)</label>
