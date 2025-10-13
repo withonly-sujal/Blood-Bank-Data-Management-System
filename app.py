@@ -85,62 +85,72 @@ def add_donor():
     return render_template('add_donor.html', stats=stats)
 
 
+# app.py
+
 @app.route('/donation/record', defaults={'donor_id': None}, methods=['GET', 'POST'])
 @app.route('/donation/record/<int:donor_id>', methods=['GET', 'POST'])
 def record_donation(donor_id):
     staff_options = [{'staff_id': 1, 'name': 'Dr. Singh (Manager)'}, {'staff_id': 2, 'name': 'Nurse Priya'}] 
-
+    stats = get_dashboard_stats(mysql)
+    
     if request.method == 'POST':
         details = request.form
         donor_id = details['donor_id']
-        staff_id = details['staff_id'] 
-        bag_id = "BAG-" + str(uuid.uuid4())[:8].upper()
+        staff_id = details['staff_id']
+        units_donated = int(details['units_donated']) # Get the new units field
         donation_date_str = details['donation_date']
-        donation_date = datetime.strptime(donation_date_str, '%Y-%m-%d').date()
-        # Ensure expiry_date is a Date object for MySQL
-        expiry_date = donation_date.replace(year=donation_date.year + 1)
+        
+        # --- SERVER-SIDE VALIDATION CHECK (Critical for security) ---
+        if units_donated > 3:
+            flash("Error: Cannot donate more than 3 units in a single session.", 'error')
+            return render_template('record_donation.html', donor_id=donor_id, staff_options=staff_options, stats=stats, now=datetime.now())
+        # -----------------------------------------------------------
 
         try:
             cur = mysql.connection.cursor()
             
-            # 1. Get Blood Group
+            # 1. Get Donor Blood Group
             cur.execute("SELECT blood_group FROM Donor WHERE donor_id = %s", [donor_id])
             donor_result = cur.fetchone()
             if not donor_result:
                 raise Exception(f"Donor ID {donor_id} not found.")
             blood_group = donor_result['blood_group']
 
-            # 2. Insert into Blood_Bag (Status defaults to 'Quarantined')
-            sql_bag = """
-                INSERT INTO Blood_Bag (bag_id, blood_group, donation_date, expiry_date, donor_id)
-                VALUES (%s, %s, %s, %s, %s)
-            """
-            cur.execute(sql_bag, (bag_id, blood_group, donation_date, expiry_date, donor_id))
+            donation_date = datetime.strptime(donation_date_str, '%Y-%m-%d').date()
+            expiry_date = donation_date.replace(year=donation_date.year + 1)
+            
+            # --- CORE FIX: LOOP AND INSERT ONE RECORD PER UNIT ---
+            bags_recorded = 0
+            for i in range(units_donated):
+                bag_id = f"BAG-{blood_group}-{str(uuid.uuid4())[:5].upper()}-{i+1}" # Unique ID for each bag
+                
+                # Insert into Blood_Bag (Status defaults to 'Quarantined')
+                sql_bag = """
+                    INSERT INTO Blood_Bag (bag_id, blood_group, donation_date, expiry_date, donor_id)
+                    VALUES (%s, %s, %s, %s, %s)
+                """
+                cur.execute(sql_bag, (bag_id, blood_group, donation_date, expiry_date, donor_id))
 
-            # 3. Insert into Donation_Transaction (TRIGGER FIRES HERE)
-            sql_trans = """
-                INSERT INTO Donation_Transaction (donor_id, staff_id, bag_id)
-                VALUES (%s, %s, %s)
-            """
-            cur.execute(sql_trans, (donor_id, staff_id, bag_id))
+                # Insert into Donation_Transaction (THIS IS WHERE THE TRIGGER FIRES FOR EACH BAG)
+                sql_trans = """
+                    INSERT INTO Donation_Transaction (donor_id, staff_id, bag_id)
+                    VALUES (%s, %s, %s)
+                """
+                cur.execute(sql_trans, (donor_id, staff_id, bag_id))
+                bags_recorded += 1
             
             mysql.connection.commit()
             cur.close()
             
-            flash(f"Donation recorded! Bag ID {bag_id} added to AVAILABLE stock (Trigger Verified).", 'success')
+            flash(f"Success! {bags_recorded} units recorded. Stock updated (Trigger Verified {bags_recorded} times).", 'success')
             return redirect(url_for('index'))
             
         except Exception as e:
             mysql.connection.rollback()
-            stats = get_dashboard_stats(mysql)
             flash(f"Donation failed. Error: {e}", 'error')
-            # Pass stats and staff options when re-rendering on error
-            return render_template('record_donation.html', donor_id=donor_id, staff_options=staff_options, stats=stats, now=datetime.now())
             
-    # GET Request
-    stats = get_dashboard_stats(mysql)
-    # Pass 'now' only for the initial GET request rendering
-    return render_template('record_donation.html', donor_id=donor_id, staff_options=staff_options, stats=stats, now=datetime.now()) 
+    # GET Request (or Error Re-render)
+    return render_template('record_donation.html', donor_id=donor_id, staff_options=staff_options, stats=stats, now=datetime.now())
 
 
 # --- 3. READ OPERATIONS (Stored Procedure and View) ---

@@ -20,6 +20,17 @@
         <label for="donation_date" class="form-label">Donation Date</label>
         <input type="date" class="form-control" name="donation_date" value="{{ now.strftime('%Y-%m-%d') }}" required>
     </div>
+    <div class="mb-3">
+        <label for="units_donated" class="form-label">Units to Donate (Max 3)</label>
+        <input type="number" 
+               class="form-control" 
+               name="units_donated" 
+               min="1" 
+               max="3" 
+               value="1" 
+               required>
+        <div class="form-text">A donor may donate a maximum of 3 units per session.</div>
+    </div>
     <button type="submit" class="btn btn-warning">Record Donation & Run Trigger</button>
 </form>
 {% endblock %}
