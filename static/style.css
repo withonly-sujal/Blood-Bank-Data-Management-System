@@ -1,26 +1,53 @@
-/* Define Custom Background Colors for main dashboard UI */
-
 .bg-custom-blue { /* 1. Register Donor */
-    background-color: #17A2B8 !important; /* Info/Teal Blue */
+    background-color: #17A2B8 !important; 
 }
 
 .bg-custom-yellow { /* 2. Record Donation */
-    background-color: #FFC107 !important; /* Bright Yellow/Warning */
+    background-color: #FFC107 !important; 
 }
 
 .bg-custom-cyan { /* 3. Stock Report */
-    background-color: #20C997 !important; /* Soft Green/Cyan */
+    background-color: #20C997 !important; 
 }
 
 .bg-custom-gray { /* 4. Eligible Donors / 5. All Donors */
-    background-color: #5A6268 !important; /* Professional Dark Gray */
+    background-color: #5A6268 !important; 
 }
 
 .bg-custom-red { /* 6. Request Blood */
-    background-color: #c50606 !important; /* Deep Red/Maroon */
+    background-color: #c50606 !important; 
 }
 
-/* Ensure Text is white on darker backgrounds */
+/* Ensure that the Text is white on darker backgrounds */
 .text-white {
     color: white !important;
+}
+
+.title-glamour {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; 
+    font-size: 3.5rem;
+    
+    background: linear-gradient(90deg, #dc3545, #c40808, #dc3545); /* Gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #dc3545; /* Fallback color */
+    
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.bg-stock-available {
+    background-color: #198754 !important;
+}
+
+a:link {
+  color: green;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: red;
+  background-color: transparent;
+  text-decoration: underline;
 }
