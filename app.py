@@ -14,7 +14,8 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'localhost')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'root')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD') 
-app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_db')
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_dbv1')   # for main project database
+#app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_dbv2')  # for trial and error purpose
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' 
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY') 
