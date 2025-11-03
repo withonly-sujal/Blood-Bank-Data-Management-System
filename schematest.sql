@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Donor (
     last_name VARCHAR(50) NOT NULL,
     date_of_birth DATE NOT NULL,
     gender ENUM('Male', 'Female', 'Other') NOT NULL,
-    phone_number VARCHAR(15) UNIQUE NOT NULL,
+    phone_number VARCHAR(10) UNIQUE NOT NULL,
     address TEXT,
     blood_group ENUM('O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-') NOT NULL
 );

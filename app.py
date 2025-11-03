@@ -14,9 +14,16 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'localhost')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'root')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD') 
-app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_dbv1')   # for main project database
-#app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_dbv2')  # for trial and error purpose
+#app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_dbv1')   # for main project database
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_dbv2')  # for trial and error purpose
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' 
+
+# To deploy:
+    #app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'mydb-instance.aws-region.rds.amazonaws.com')
+    #app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'admin')
+    #app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+    #app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'bloodbank_dbv2')
+    #app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY') 
 mysql = MySQL(app) # Initialize MySQL object here
@@ -99,7 +106,7 @@ def record_donation(donor_id):
         donor_id = details['donor_id']
         staff_id = details['staff_id']
         units_donated = int(details['units_donated']) # Get the new units field
-        donation_date_str = details['donation_date']
+        donation_date_str = details['donation_date'] 
         
         # --- SERVER-SIDE VALIDATION CHECK (Critical for security) ---
         if units_donated > 3:
@@ -235,7 +242,7 @@ def request_blood():
                 VALUES (%s, %s, %s)
             """
             cur.execute(sql_recipient, (patient_name, hospital, required_group))
-            patient_id = cur.lastrowid
+            patient_id = cur.lastrowid # generates patient ID automatically as it is autoincreament
             
             # 2. Insert Blood Request
             sql_request = """
@@ -243,7 +250,7 @@ def request_blood():
                 VALUES (%s, %s, %s, 'Pending')
             """
             cur.execute(sql_request, (patient_id, required_group, units))
-            request_id = cur.lastrowid
+            request_id = cur.lastrowid  # generates request ID automatically as it is autoincreament
             
             mysql.connection.commit()
             cur.close()
@@ -288,11 +295,11 @@ def fulfill_request(request_id):
             LIMIT %s
         """
         cur.execute(sql_find_bag, (required_group, units_needed))
-        available_bags = cur.fetchall()
+        available_bags = cur.fetchall()  # List of available bags
         
         if len(available_bags) >= units_needed:
             # --- STOCK IS AVAILABLE: FULFILL THE REQUEST (UPDATE/DELETE) ---
-            bag_ids_to_use = [bag['bag_id'] for bag in available_bags]
+            bag_ids_to_use = [bag['bag_id'] for bag in available_bags] # Extract bag IDs store them in bag_ids_to_use (a tuple)
 
             # a. Update Blood Bags (UPDATE)
             sql_update_bags = f"""
